@@ -9,11 +9,11 @@ Each sensor sends an **image**. After demodulation we get:
 |Sensor 1|!\[Cloudy sky](images/capteur1.png)|
 |Sensor 2|!\[Thunderstorm](images/capteur2.png)|
 
-
+> 
 
 ### Easy case (`facile.m`)
 
-The simplified version uses a separate received signal (`SignalRecu\_facile.mat`) with a **single sensor** and no multi-user interference. Its output is a different image: **a cloud in a blue sky**.
+The simplified version uses a separate received signal (`SignalRecu\\\_facile.mat`) with a **single sensor** and no multi-user interference. Its output is a different image: **a cloud in a blue sky**.
 
 |Single sensor (easy case)|
 |-|
@@ -48,11 +48,11 @@ Here the spreading codes are **Gold sequences**, built from two **m-sequences** 
 
 ```mermaid
 flowchart LR
-    A\["Received signal<br/>SignalRecu.mat"] --> B\["Matched filter<br/>correlation with Gold code<br/>(CorSeq)"]
-    B --> C\["Threshold detection<br/>+1 / -1 / nothing<br/>(Symbole)"]
-    C --> D\["Frame synchronisation<br/>m-sequence correlation<br/>(Synchro)"]
-    D --> E\["Bits to bytes<br/>to RGB image<br/>(Reconstruction)"]
-    E --> F\["Image of sensor k"]
+    A\\\["Received signal<br/>SignalRecu.mat"] --> B\\\["Matched filter<br/>correlation with Gold code<br/>(CorSeq)"]
+    B --> C\\\["Threshold detection<br/>+1 / -1 / nothing<br/>(Symbole)"]
+    C --> D\\\["Frame synchronisation<br/>m-sequence correlation<br/>(Synchro)"]
+    D --> E\\\["Bits to bytes<br/>to RGB image<br/>(Reconstruction)"]
+    E --> F\\\["Image of sensor k"]
 ```
 
 The chain is run twice on the same received signal: once with the Gold code of sensor 1, once with the Gold code of sensor 2.
@@ -70,7 +70,7 @@ The chain is run twice on the same received signal: once with the Gold code of s
 ├── Synchro.m             # Frame synchronisation with an m-sequence
 ├── Reconstruction.m      # Symbols -> bits -> bytes -> RGB image
 ├── SignalRecu.mat        # Received signal (2 sensors, CDMA)
-├── SignalRecu\_facile.mat # Received signal (easy case)
+├── SignalRecu\\\_facile.mat # Received signal (easy case)
 └── images/               # Result images
 ```
 
@@ -84,16 +84,16 @@ Three polynomials are used in `projet.m`:
 
 |Polynomial|Degree|Sequence length|Role|
 |-|-|-|-|
-|`p1 = \[1 1 0 0 0 0 1]`|6|63|first m-sequence `a` (to build Gold codes)|
-|`p2 = \[1 1 1 0 0 1 1]`|6|63|second m-sequence `b` (to build Gold codes)|
-|`p3 = \[1 0 0 0 1 0 0 1]`|7|127|synchronisation sequence `c` (frame delimiter)|
+|`p1 = \\\[1 1 0 0 0 0 1]`|6|63|first m-sequence `a` (to build Gold codes)|
+|`p2 = \\\[1 1 1 0 0 1 1]`|6|63|second m-sequence `b` (to build Gold codes)|
+|`p3 = \\\[1 0 0 0 1 0 0 1]`|7|127|synchronisation sequence `c` (frame delimiter)|
 
 ### 2\. Gold codes: `Gold.m`
 
 A Gold code is the XOR of the first m-sequence with a **circularly shifted** copy of the second one:
 
 ```
-gold\_d = a  XOR  shift(b, d)
+gold\\\_d = a  XOR  shift(b, d)
 ```
 
 Changing the shift `d` gives a different code of the same family. Each sensor has its own:
@@ -141,7 +141,7 @@ The sequence appears twice, and the two maxima in `t` mark where the useful payl
 3. Group the bits into **8-bit bytes** (`bit2int`).
 4. The **first byte** is the number of image rows.
 5. The remaining bytes are the pixel values, stored as three consecutive planes: **R, G, B**. The number of columns is deduced from the amount of data.
-6. Each plane is reshaped to `rows × cols` and divided by 255 to get an image in `\[0, 1]`.
+6. Each plane is reshaped to `rows × cols` and divided by 255 to get an image in `\\\[0, 1]`.
 
 ## Usage
 
@@ -158,7 +158,7 @@ The sequence appears twice, and the two maxima in `t` mark where the useful payl
    * the synchronisation peaks (`stem` plots) for each sensor,
    * **two figures with the recovered images** (cloudy sky and thunderstorm).
 
-To try the simplified single-sensor case, run `facile` instead (it uses `SignalRecu\_facile.mat`). It uses the m-sequence `a` directly as the spreading code, a detection threshold `seuil = 0.95 \* length(a)` (about 60 for a 63-chip code), and recovers one image: a cloud in a blue sky.
+To try the simplified single-sensor case, run `facile` instead (it uses `SignalRecu\\\_facile.mat`). It uses the m-sequence `a` directly as the spreading code, a detection threshold `seuil = 0.95 \\\* length(a)` (about 60 for a 63-chip code), and recovers one image: a cloud in a blue sky.
 
 ## Requirements
 
@@ -173,14 +173,12 @@ To try the simplified single-sensor case, run `facile` instead (it uses `SignalR
 |Gold code length|63 chips|`Gold.m` / `msequence.m`|
 |Gold shifts|`d = 1` (sensor 1), `d = 2` (sensor 2)|`projet.m`|
 |Detection threshold (2 sensors)|60|`projet.m` (`Symbole(..., 60)`)|
-|Detection threshold (easy case)|`0.95 \* length(a)` (about 60)|`facile.m` (`seuil`)|
+|Detection threshold (easy case)|`0.95 \\\* length(a)` (about 60)|`facile.m` (`seuil`)|
 |Sync sequence length|127|polynomial `p3`|
 |Bits per pixel value|8|`Reconstruction.m`|
 |Image format|RGB, 3 planes, row count in first byte|`Reconstruction.m`|
 
 \---
 
-## Author
 
-Youcef Talbi: Master 2 Networks and Telecommunications, Université Gustave Eiffel.
 
